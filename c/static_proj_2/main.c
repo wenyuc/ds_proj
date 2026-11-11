@@ -2,7 +2,10 @@
 gcc -Wall -Wextra -o bin/static_demo2 global.c main.c other.c
 */
 #include <stdio.h>
-#include "global.h"   /* 拿到 g_shared_counter 的 extern 声明 */
+/* 只要包含头文件，就自动拿到 g_shared_counter 的 extern 声明 
+无需在每个c文件手写一遍extern.
+*/
+#include "global.h"
 
 int main(void)
 {

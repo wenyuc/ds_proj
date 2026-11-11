@@ -3,7 +3,9 @@ gcc -Wall -Wextra -o bin/static_demo1 module_a.c module_b.c
 */
 #include <stdio.h>
 
-/* 访问 module_a.c 的"非 static"全局变量 —— 合法 */
+/* 访问 module_a.c 的"非 static"全局变量 —— 合法 
+extern 解决的不是编译问题，而是跨文件的符号链接匹配问题.
+*/
 extern int shared_counter;
 
 /* 访问 module_a.c 的"非 static"函数 —— 合法 */
