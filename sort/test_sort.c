@@ -37,7 +37,7 @@ Status insertionSort(int *data, int len)
 {
     for(int i=1; i<len; i++)
     {
-        int key=data[i];
+        int key=data[i];  //key的作用就是教材中的L.r[0]哨兵,不是待排序元素
         int j=i-1;
         while(j>=0 && data[j]>key)
         {
@@ -68,7 +68,7 @@ Status binaryInsertionSort(int *data, int len)
                 low=mid+1;
             }
         }
-        for(int j=i-1; j>=low; j--)
+        for(int j=i-1; j>=low; j--) //也可以用j>=high=1作为判定条件，与书类似
         {
             data[j+1]=data[j];
         }
