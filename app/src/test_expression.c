@@ -1,14 +1,12 @@
+/**
+ * Test expression evaluation using a dynamic stack.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "stack.h"
+#include "ds_type.h"
 
-typedef enum {
-    LEFT_PARE, RIGHT_PARE,
-    ADD, SUB, MUL, DIV,MOD,
-    EOS, NUM
-}SymbolType;
-
-const char expr[] = "82/2+56*-";
+const char expr[] = "82/2+56*-";//postfix expression
 
 SymbolType getToken(char *symbol, int *index)
 {
@@ -35,7 +33,7 @@ SymbolType getToken(char *symbol, int *index)
         default:
             return NUM;
     }
-}
+}//getToken
 
 int eval(DynamicStack *S)
 {
@@ -82,16 +80,16 @@ int eval(DynamicStack *S)
                     break;
                 default:
                     break;
-            }
-        }
+            }//switch
+        }//if-else
         //get the top element
         dynamic_getTop(S, &tmp);
         printf("top element: %d at %d do %d\n", tmp, S->top, token);
         token=getToken(&symbol, &index);
-    }
+    }//while
     dynamic_pop(S, &result);
     return result;
-}
+}//eval
 
 int main(void)
 {

@@ -5,7 +5,7 @@ int main(void)
 {
     //int ret;
 
-    printf("--- create a StaticStack---\n");
+    printf("=== test Sequence Static Stack ===\n");
     StaticStack* S_Stack;
     S_Stack=create_staticStack();
     if (S_Stack==NULL) return ERROR;
@@ -28,7 +28,7 @@ int main(void)
     printf("getTop: %c\n",e);
     printf("Stack Size: %d\n", static_stackSize(S_Stack));
 
-    printf("--- create a DynamicStack with char data type---\n");
+    printf("=== test Sequence Dynamic Stack with char data type ===\n");
     DynamicStack *D_stack;
     int initialCapacity=10;
     char e_char;
@@ -48,7 +48,7 @@ int main(void)
     printf("is Empty: %d is Full: %d\n",dynamic_isEmpty(D_stack), dynamic_isFull(D_stack));
     destroy_dynamicStack(D_stack);
 
-    printf("--- create a DynamicStack with int data type---\n");
+    printf("=== test Sequence Dynamic Stack with int data type ===\n");
     DynamicStack *D_int_stack;
     int e_int;
     initialCapacity=5;
@@ -68,5 +68,78 @@ int main(void)
     printf("is Empty: %d is Full: %d\n",dynamic_isEmpty(D_int_stack), dynamic_isFull(D_int_stack));
     destroy_dynamicStack(D_int_stack);
 
+    //Create a Linked Static Stack
+    printf("=== test linked static stack ===\n");
+    LinkedStaticStack *LS_stack;
+    LS_stack = create_linkedStaticStack();
+    if (LS_stack == NULL) return ERROR;
+
+    linkedStatic_push(LS_stack, 'A');
+    linkedStatic_push(LS_stack, 'B');
+    linkedStatic_push(LS_stack, 'C');
+    linkedStatic_push(LS_stack, 'D');
+
+    linkedStatic_pop(LS_stack, &e);
+    printf("pop: %c\n",e);
+    linkedStatic_pop(LS_stack, &e);
+    printf("pop: %c\n",e);
+    linkedStatic_pop(LS_stack, &e);
+    printf("pop: %c\n",e);
+    printf("is Empty: %d\n",linkedStatic_isEmpty(LS_stack));
+
+    linkedStatic_getTop(LS_stack, &e);
+    printf("getTop: %c\n",e);
+    printf("Stack Size: %d\n", linkedStatic_stackSize(LS_stack));
+
+    destroy_linkedStaticStack(LS_stack);
+
+    printf("=== test linked dynamic stack with char data type ===\n");
+    LinkedDynamicStack *LD_char_stack;
+    LD_char_stack = create_linkedDynamicStack(initialCapacity, sizeof(char));
+    if (LD_char_stack == NULL) return ERROR;
+
+    linkedDynamic_push(LD_char_stack, &a);
+    linkedDynamic_push(LD_char_stack, &b);
+    linkedDynamic_push(LD_char_stack, &c);
+    linkedDynamic_push(LD_char_stack, &d);
+
+    linkedDynamic_pop(LD_char_stack, &e_char);
+    printf("pop: %c\n",e_char);
+    linkedDynamic_pop(LD_char_stack, &e_char);
+    printf("pop: %c\n",e_char);
+    linkedDynamic_pop(LD_char_stack, &e_char);
+    printf("pop: %c\n",e_char);
+    printf("is Empty: %d\n",linkedDynamic_isEmpty(LD_char_stack));
+
+    linkedDynamic_getTop(LD_char_stack, &e_char);
+    printf("getTop: %c\n",e_char);
+    printf("Stack Size: %d\n", linkedDynamic_stackSize(LD_char_stack));
+
+    destroy_linkedDynamicStack(LD_char_stack);
+
+    printf("=== test Linked Dynamic Stack with int data type ===\n");
+    LinkedDynamicStack *LD_int_stack;
+    LD_int_stack = create_linkedDynamicStack(initialCapacity, sizeof(int));
+    if (LD_int_stack == NULL) return ERROR;
+
+    linkedDynamic_push(LD_int_stack, &u);
+    linkedDynamic_push(LD_int_stack, &v);
+    linkedDynamic_push(LD_int_stack, &w);
+    linkedDynamic_push(LD_int_stack, &x);
+
+    linkedDynamic_pop(LD_int_stack, &e_int);
+    printf("pop: %d\n",e_int);
+    linkedDynamic_pop(LD_int_stack, &e_int);
+    printf("pop: %d\n",e_int);
+    linkedDynamic_pop(LD_int_stack, &e_int);
+    printf("pop: %d\n",e_int);
+    printf("is Empty: %d\n",linkedDynamic_isEmpty(LD_int_stack));
+
+    linkedDynamic_getTop(LD_int_stack, &e_int);
+    printf("getTop: %d\n",e_int);
+    printf("Stack Size: %d\n", linkedDynamic_stackSize(LD_int_stack));
+
+    destroy_linkedDynamicStack(LD_int_stack);
+    
     return SUCCESS;
 }

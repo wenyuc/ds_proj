@@ -1,16 +1,9 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <stdlib.h>
+#include "ds_type.h"
 
-#define MAXSIZE 100
-#define SUCCESS 0
-#define ERROR 1
-
-typedef int Status;
-typedef char ElemType;
-typedef enum { FALSE, TRUE } Bool;
-
+//StaticStack structure
 typedef struct {
     ElemType data[MAXSIZE];
     int top;  // Stack top, pop the element at this position
@@ -28,7 +21,6 @@ Bool static_isFull(StaticStack *S);
 int static_stackSize(StaticStack *S);
 
 // DynamicStack structure
-//typedef void *NewElemType;
 typedef struct {
     void **data; //any data type can be stored in the stack
     size_t elem_size; //size of each element in the stack
@@ -46,5 +38,43 @@ Status dynamic_getTop(DynamicStack *S, void *e);
 Bool dynamic_isEmpty(DynamicStack *S);
 Bool dynamic_isFull(DynamicStack *S);
 int dynamic_stackSize(DynamicStack *S);
+
+/*
+Linked Static Stack Structure
+data type is decided by ElemType. Sequence of elements is stored in a linked manner.
+*/
+typedef struct stack{
+    ElemType data[MAXSIZE];
+    struct stack *next;
+}LinkedStaticStack;
+
+// Linked Static Stack functions
+LinkedStaticStack *create_linkedStaticStack(void);
+Status init_linkedStaticStack(LinkedStaticStack *S);
+Status destroy_linkedStaticStack(LinkedStaticStack *S);
+Status linkedStatic_push(LinkedStaticStack *S, ElemType e);
+Status linkedStatic_pop(LinkedStaticStack *S, ElemType *e);
+Status linkedStatic_getTop(LinkedStaticStack *S, ElemType *e);
+Bool linkedStatic_isEmpty(LinkedStaticStack *S);
+int linkedStatic_stackSize(LinkedStaticStack *S);
+
+//Linked Dynamic Stack Structure
+typedef struct ld_stack {
+    void **data;
+    size_t elem_size;
+    int capacity;
+    struct ld_stack *next;
+}LinkedDynamicStack;
+
+// Linked Dynamic Stack functions
+LinkedDynamicStack *create_linkedDynamicStack(int initialCapacity, int elem_size);
+Status init_linkedDynamicStack(LinkedDynamicStack *S, int initialCapacity, int elem_size);
+Status destroy_linkedDynamicStack(LinkedDynamicStack *S);
+Status linkedDynamic_push(LinkedDynamicStack *S, const void *e);
+Status linkedDynamic_pop(LinkedDynamicStack *S, void *e);
+Status linkedDynamic_getTop(LinkedDynamicStack *S, void *e);
+Bool linkedDynamic_isEmpty(LinkedDynamicStack *S);
+//Bool linkedDynamic_isFull(LinkedDynamicStack *S);
+int linkedDynamic_stackSize(LinkedDynamicStack *S);
 
 #endif // STACK_H
