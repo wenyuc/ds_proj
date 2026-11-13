@@ -1,4 +1,6 @@
+/tools
 bin/
+session.txt:
 *.o
 *.a
 *.d
