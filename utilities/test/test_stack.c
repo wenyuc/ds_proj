@@ -26,7 +26,7 @@ int main(void)
 
     static_getTop(S_Stack, &e);
     printf("getTop: %c\n",e);
-    printf("Stack Size: %d\n", static_stackSize(S_Stack));
+    printf("Stack Size: %zu\n", static_stackSize(S_Stack));
 
     printf("=== test Sequence Dynamic Stack with char data type ===\n");
     DynamicStack *D_stack;
@@ -42,7 +42,7 @@ int main(void)
     printf("pop: %c\n",e_char);
     dynamic_pop(D_stack, &e_char);
     printf("pop: %c\n", e_char);
-    printf("Stack Size: %d\n", dynamic_stackSize(D_stack));
+    printf("Stack Size: %zu\n", dynamic_stackSize(D_stack));
     dynamic_getTop(D_stack, &e_char);
     printf("getTop: %c\n",e_char);
     printf("is Empty: %d is Full: %d\n",dynamic_isEmpty(D_stack), dynamic_isFull(D_stack));
@@ -62,7 +62,7 @@ int main(void)
     printf("pop: %d\n",e_int);
     dynamic_pop(D_int_stack, &e_int);
     printf("pop: %d\n",e_int);
-    printf("Stack Size: %d\n", dynamic_stackSize(D_int_stack));
+    printf("Stack Size: %zu\n", dynamic_stackSize(D_int_stack));
     dynamic_getTop(D_int_stack, &e_int);
     printf("getTop: %d\n",e_int);
     printf("is Empty: %d is Full: %d\n",dynamic_isEmpty(D_int_stack), dynamic_isFull(D_int_stack));
@@ -89,7 +89,7 @@ int main(void)
 
     linkedStatic_getTop(LS_stack, &e);
     printf("getTop: %c\n",e);
-    printf("Stack Size: %d\n", linkedStatic_stackSize(LS_stack));
+    printf("Stack Size: %zu\n", linkedStatic_stackSize(LS_stack));
 
     destroy_linkedStaticStack(LS_stack);
 
@@ -113,7 +113,7 @@ int main(void)
 
     linkedDynamic_getTop(LD_char_stack, &e_char);
     printf("getTop: %c\n",e_char);
-    printf("Stack Size: %d\n", linkedDynamic_stackSize(LD_char_stack));
+    printf("Stack Size: %zu\n", linkedDynamic_stackSize(LD_char_stack));
 
     destroy_linkedDynamicStack(LD_char_stack);
 
@@ -137,7 +137,7 @@ int main(void)
 
     linkedDynamic_getTop(LD_int_stack, &e_int);
     printf("getTop: %d\n",e_int);
-    printf("Stack Size: %d\n", linkedDynamic_stackSize(LD_int_stack));
+    printf("Stack Size: %zu\n", linkedDynamic_stackSize(LD_int_stack));
 
     destroy_linkedDynamicStack(LD_int_stack);
     

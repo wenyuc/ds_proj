@@ -1,6 +1,10 @@
+/*
+Stack data structures and their operations.
+*/
 #ifndef STACK_H
 #define STACK_H
 
+#include <stddef.h>
 #include "ds_type.h"
 
 //StaticStack structure
@@ -18,7 +22,7 @@ Status static_pop(StaticStack *S, ElemType *e);
 Status static_getTop(StaticStack *S, ElemType *e);
 Bool static_isEmpty(StaticStack *S);
 Bool static_isFull(StaticStack *S);
-int static_stackSize(StaticStack *S);
+size_t static_stackSize(StaticStack *S);
 
 // DynamicStack structure
 typedef struct {
@@ -37,7 +41,7 @@ Status dynamic_pop(DynamicStack *S, void *e);
 Status dynamic_getTop(DynamicStack *S, void *e);
 Bool dynamic_isEmpty(DynamicStack *S);
 Bool dynamic_isFull(DynamicStack *S);
-int dynamic_stackSize(DynamicStack *S);
+size_t dynamic_stackSize(DynamicStack *S);
 
 /*
 Linked Static Stack Structure
@@ -56,7 +60,7 @@ Status linkedStatic_push(LinkedStaticStack *S, ElemType e);
 Status linkedStatic_pop(LinkedStaticStack *S, ElemType *e);
 Status linkedStatic_getTop(LinkedStaticStack *S, ElemType *e);
 Bool linkedStatic_isEmpty(LinkedStaticStack *S);
-int linkedStatic_stackSize(LinkedStaticStack *S);
+size_t linkedStatic_stackSize(LinkedStaticStack *S);
 
 //Linked Dynamic Stack Structure
 typedef struct ld_stack {
@@ -75,6 +79,6 @@ Status linkedDynamic_pop(LinkedDynamicStack *S, void *e);
 Status linkedDynamic_getTop(LinkedDynamicStack *S, void *e);
 Bool linkedDynamic_isEmpty(LinkedDynamicStack *S);
 //Bool linkedDynamic_isFull(LinkedDynamicStack *S);
-int linkedDynamic_stackSize(LinkedDynamicStack *S);
+size_t linkedDynamic_stackSize(LinkedDynamicStack *S);
 
 #endif // STACK_H

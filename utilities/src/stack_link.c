@@ -79,9 +79,9 @@ Bool linkedStatic_isEmpty(LinkedStaticStack *S)
     return (S == NULL || S->next == NULL) ? TRUE : FALSE;
 }//linkedStatic_isEmpty
 
-int linkedStatic_stackSize(LinkedStaticStack *S)
+size_t linkedStatic_stackSize(LinkedStaticStack *S)
 {
-    int size = 0;
+    size_t size = 0;
     LinkedStaticStack *current = S->next;
     while (current != NULL)
     {
@@ -193,9 +193,9 @@ Bool linkedDynamic_isEmpty(LinkedDynamicStack *S)
     return (S == NULL || S->next == NULL) ? TRUE : FALSE;
 }//linkedDynamic_isEmpty
 
-int linkedDynamic_stackSize(LinkedDynamicStack *S)
+size_t linkedDynamic_stackSize(LinkedDynamicStack *S)
 {
-    int size = 0;
+    size_t size = 0;
     LinkedDynamicStack *current = S->next;
     while (current != NULL)
     {

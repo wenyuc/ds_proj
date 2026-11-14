@@ -1,3 +1,6 @@
+/*
+Static and Dynamic Stack Operations Implementation
+*/
 #include <string.h>
 #include <stdlib.h>
 #include "stack.h"
@@ -32,9 +35,9 @@ Bool static_isFull(StaticStack *S)
     return (S->top == MAXSIZE-1) ? TRUE : FALSE;
 }//isFull
 
-int static_stackSize(StaticStack *S)
+size_t static_stackSize(StaticStack *S)
 {
-    return S->top + 1;
+    return (size_t)(S->top + 1);
 }//stackSize
 
 //push e into Stack
@@ -143,9 +146,9 @@ Bool dynamic_isFull(DynamicStack *S)
     return (S->top == S->capacity-1) ? TRUE : FALSE;
 }//dynamic_isFull
 
-int dynamic_stackSize(DynamicStack *S)
+size_t dynamic_stackSize(DynamicStack *S)
 {
-    return S->top + 1;
+    return (size_t)(S->top + 1);
 }//dynamic_stackSize
 
 Status dynamic_push(DynamicStack *S, const void *e)
