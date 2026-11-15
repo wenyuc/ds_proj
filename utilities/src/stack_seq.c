@@ -5,6 +5,32 @@ Static and Dynamic Stack Operations Implementation
 #include <stdlib.h>
 #include "stack.h"
 
+//array stack implementation
+static int top = -1;
+static int array_stack[MAXVEX]; //用于存储入度为0的顶点
+
+Status array_push(int v) {
+    if (top >= MAXVEX - 1) {
+        return ERROR;
+    }
+    top++;
+    array_stack[top] = v;
+    return SUCCESS;
+}
+
+Status array_pop(int *v) {
+    if (top < 0) {
+        return ERROR;
+    }
+    *v = array_stack[top];
+    top--;
+    return SUCCESS;
+}
+
+Bool array_is_empty(void) {
+    return (top < 0) ? TRUE : FALSE;
+}
+
 //StaticStack functions
 //initialize a stack by setting its top to -1.
 Status init_staticStack(StaticStack *S)

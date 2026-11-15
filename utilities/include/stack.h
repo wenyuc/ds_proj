@@ -7,6 +7,13 @@ Stack data structures and their operations.
 #include <stddef.h>
 #include "ds_type.h"
 
+/* array as a simple stack（LIFO） implementation 
+*/
+//array stack functions
+Status array_push(int e);
+Status array_pop(int *e);
+Bool array_is_empty(void);
+
 //StaticStack structure
 typedef struct {
     ElemType data[MAXSIZE];

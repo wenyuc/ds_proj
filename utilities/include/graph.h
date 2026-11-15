@@ -35,4 +35,12 @@ typedef struct {
 typedef Adj_Graph* Adj_List_GraphPtr; //Adj_List_GraphPtr is a pointer to an Adj_Graph structure, 
                                       //representing a graph using an adjacency list.
 
+//Graph operations
+Status create_MatGraph(Mat_Graph* G);
+Status create_AdjGraph(Mat_Graph G, Adj_Graph **ALG);
+//Status topological_sort(Adj_List_GraphPtr ALG);
+Status destroy_MatGraph(Mat_Graph* G);
+Status destroy_AdjGraph(Adj_List_GraphPtr G);
+Status display_MatGraph(Mat_Graph* G);
+Status display_AdjGraph(Adj_List_GraphPtr G);
 #endif // GRAPH_H
