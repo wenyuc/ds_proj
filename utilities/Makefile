@@ -1,7 +1,7 @@
 CC = gcc
 
 # 头文件路径：src 的 .c 和 test 的 .c 都要能找到 include/*.h
-CFLAGS = -std=c99 -pedantic-errors -Wall -Wextra -Werror -Wnewline-elf -g -O0 -Iinclude
+CFLAGS = -std=c99 -pedantic-errors -Wall -Wextra -Werror -g -O0 -Iinclude
 CFLAGS += -MMD -MP
 
 BIN_DIR  = bin
