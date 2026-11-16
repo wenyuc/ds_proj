@@ -12,7 +12,7 @@ typedef enum {false, true}Bool;
 typedef struct binode
 {
     ElemType data;
-    struct bide *lchild;
+    struct binode *lchild;
     struct binode *rchild;
 }BiTreeNode;  //二叉树结点
 
@@ -144,7 +144,7 @@ void traverseThreadTree_in(ThreadTree T)
     return;
 }
 
-//TODO:线索方式实现的中序遍历
+//TODO:线索方式实现的后序遍历
 Status traverseThreadTree_post(void)
 {
     return SUCCESS;
