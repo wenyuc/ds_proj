@@ -9,21 +9,15 @@ Dynamic Linked Queue Implementation
 //initialize a dynamic linked queue with initial capacity and element size
 Status initialize_DynamicQueue(DynamicQueue* q, size_t initialCapacity, size_t elem_size) 
 {
-    if (q == NULL) {
+    if (q == NULL || initialCapacity == 0 || elem_size == 0) {
         return ERROR;
     }
 
     QNode* node = (QNode*)malloc(sizeof(QNode));
     if (node == NULL) {
-        free(q);
         return ERROR;
     }
-    node->data = (void**)malloc(initialCapacity * elem_size);
-    if (node->data == NULL) {
-        free(node);
-        free(q);
-        return ERROR;
-    }
+    node->data = NULL;
     node->elem_size = elem_size;
     node->capacity = initialCapacity;
     node->next = NULL;
@@ -68,7 +62,7 @@ Status enqueue_DynamicQueue(DynamicQueue* q, const void* item)
     if (newnode == NULL) {
         return ERROR;
     }
-    newnode->data = (void**)malloc(q->rear->capacity * q->rear->elem_size);
+    newnode->data = (void**)malloc(q->rear->elem_size);
     if (newnode->data == NULL) {
         free(newnode);
         return ERROR;
@@ -93,9 +87,15 @@ Status dequeue_DynamicQueue(DynamicQueue* q, void* item)
         return ERROR;
     }
 
-    QNode* oldnode = q->front;
+    QNode* oldnode = q->front->next;
+    if (oldnode == NULL) {
+        return ERROR;
+    }
     memcpy(item, (char*)oldnode->data + (size_t)0 * oldnode->elem_size, oldnode->elem_size);
-    q->front = oldnode->next;
+    q->front->next = oldnode->next;
+    if (q->rear == oldnode) {
+        q->rear = q->front;
+    }
     free(oldnode->data);
     free(oldnode);
     return SUCCESS;
@@ -111,7 +111,7 @@ Status peek_DynamicQueueFront(DynamicQueue* q, void* item)
         return ERROR;
     }
 
-    QNode* frontnode = q->front;
+    QNode* frontnode = q->front->next;
     memcpy(item, (char*)frontnode->data + (size_t)0 * frontnode->elem_size, frontnode->elem_size);
     return SUCCESS;
 }//peek_DynamicQueueFront
@@ -137,7 +137,7 @@ size_t get_DynamicQueueLength(DynamicQueue* q)
         return 0;
     }
     size_t length = 0;
-    QNode* current = q->front;
+    QNode* current = q->front->next;
     while (current != NULL) {
         length++;
         current = current->next;

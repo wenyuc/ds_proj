@@ -5,7 +5,7 @@ Linked List Implementation
 #include <stdlib.h>
 #include "queue.h"
 
-LList* create_LinkedList()
+LList* create_LinkedList(void)
 {
     LNode *head=(LNode*)malloc(sizeof(LNode));  //在堆上创建Node
     if (head==NULL) return NULL;
@@ -27,7 +27,7 @@ Status initialize_LinkedList(LList* l)
 
 Bool is_LinkedListEmpty(LList* head)
 {
-    return head->next == NULL ? TRUE: FALSE;
+    return head == NULL || head->next == NULL ? TRUE: FALSE;
 }
 
 static LNode* create_LNode(ElemType item)
@@ -42,7 +42,9 @@ static LNode* create_LNode(ElemType item)
 //insert into linked list at head or tail
 Status enqueue_LinkedList(LList* head, END end, const ElemType e)
 {
+    if (head==NULL) return ERROR;
     LNode *node=create_LNode(e);
+    if (node==NULL) return ERROR;
     switch(end)
     {
         case HEAD:
@@ -64,6 +66,7 @@ Status enqueue_LinkedList(LList* head, END end, const ElemType e)
 //remove from linked list at head or tail and return its data
 Status dequeue_LinkedList(LList* head, END end, ElemType *item)
 {
+    if (head==NULL || item==NULL) return ERROR;
     LNode *p=head;
     switch(end)
     {
@@ -75,6 +78,7 @@ Status dequeue_LinkedList(LList* head, END end, ElemType *item)
             free(p);
             break;
         case TAIL:
+            if (head->next==NULL) return ERROR;
             while(p->next->next!=NULL) p=p->next;
             LNode *q=p->next;
             p->next=NULL;
@@ -90,6 +94,7 @@ Status dequeue_LinkedList(LList* head, END end, ElemType *item)
 //head as dummy node, pos starts from 1 as the first actual node i.e., head->next
 Status peek_LinkedList(LList* head, size_t pos, ElemType* item)
 {
+    if (head==NULL || item==NULL || pos==0) return ERROR;
     if (is_LinkedListEmpty(head)) return ERROR;
 
     LNode *p=head; //pre-node of pos
@@ -99,13 +104,14 @@ Status peek_LinkedList(LList* head, size_t pos, ElemType* item)
         p=p->next;
         i++;
     }
-    if (i!=pos-1) return ERROR;
+    if (i!=pos-1 || p->next==NULL) return ERROR;
     *item=p->next->data;
     return SUCCESS;
 }//peek_LinkedList
 
 Status insert_LinkedList(LList* head, size_t pos, const ElemType item)
 {
+    if (head==NULL || pos==0) return ERROR;
     LNode *p=head; //pre-node of pos
     size_t i=0;
     while(p->next!=NULL && i<pos-1)
@@ -124,6 +130,7 @@ Status insert_LinkedList(LList* head, size_t pos, const ElemType item)
 //delete from linked list at a specific position(starting from 1) and return its data
 Status delete_LinkedList(LList* head, size_t pos, ElemType *item)
 {
+    if (head==NULL || item==NULL || pos==0) return ERROR;
     LNode *p=head; //pre-node of pos
     size_t i=0;
     while(p->next!=NULL && i<pos-1)
@@ -131,7 +138,7 @@ Status delete_LinkedList(LList* head, size_t pos, ElemType *item)
         p=p->next;
         i++;
     }
-    if (i!=pos-1) return ERROR;
+    if (i!=pos-1 || p->next==NULL) return ERROR;
     LNode *node=p->next;
     p->next=node->next;
     *item=node->data;
@@ -141,6 +148,7 @@ Status delete_LinkedList(LList* head, size_t pos, ElemType *item)
 
 Status update_LinkedList(LList* head, size_t pos, const ElemType item)
 {
+    if (head==NULL || pos==0) return ERROR;
     LNode *p=head; //pre-node of pos
     size_t i=0;
     while(p->next!=NULL && i<pos-1)
@@ -148,7 +156,7 @@ Status update_LinkedList(LList* head, size_t pos, const ElemType item)
         p=p->next;
         i++;
     }
-    if (i!=pos-1) return ERROR;
+    if (i!=pos-1 || p->next==NULL) return ERROR;
     p->next->data=item;
     return SUCCESS;
 }//update_LinkedList
@@ -156,6 +164,7 @@ Status update_LinkedList(LList* head, size_t pos, const ElemType item)
 //get the length of the linked list
 size_t get_LinkedListLength(LList* head)
 {
+    if (head==NULL) return 0;
     LNode *p=head->next;
     size_t count=0;
     while(p!=NULL)
@@ -169,6 +178,7 @@ size_t get_LinkedListLength(LList* head)
 //still keep head as the dummy node
 Status destroy_LinkedList(LList* head)
 {
+    if (head==NULL) return ERROR;
     LNode *p=head->next;
     while(p!=NULL)
     {
@@ -177,5 +187,6 @@ Status destroy_LinkedList(LList* head)
         free(q);
     }
     head->next=NULL;
+    free(head);
     return SUCCESS;
 }//destroy_LinkedList

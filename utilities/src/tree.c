@@ -13,8 +13,9 @@ static int str_idx=0;
 //构建一颗树，通过前序生成的一个字符串来生成二叉树结构
 BiTree create_BiTree(void)
 {    
-    BiTree *T=(BiTree*)malloc(sizeof(BiTreeNode));
+    BiTree *T=(BiTree*)malloc(sizeof(BiTree));
     if (T==NULL) return NULL;
+    str_idx=0;
     if (initialize_BiTree(T) != SUCCESS)
     {
         free(T);
@@ -25,10 +26,10 @@ BiTree create_BiTree(void)
 
 Status initialize_BiTree(BiTree *T)
 {
+    if (T==NULL) return ERROR;
     ElemType ch;
     ch=preorder_str[str_idx++];
 
-    if (T==NULL) return ERROR;
     if (ch=='#')
     {
         *T=NULL;    //*TreeNode=NULL
@@ -92,8 +93,9 @@ static ThreadTree prev; //保存上一个访问的结点
 //create a ThreadTree
 ThreadTree create_ThreadTree(void)
 {
-    ThreadTree *T=(ThreadTree*)malloc(sizeof(ThreadTreeNode));
+    ThreadTree *T=(ThreadTree*)malloc(sizeof(ThreadTree));
     if (T==NULL) return NULL;
+    str_idx=0;
     if (initialize_ThreadTree(T) != SUCCESS)
     {
         free(T);
@@ -105,6 +107,7 @@ ThreadTree create_ThreadTree(void)
 //initialize ThreadTree with specific pre-order string
 Status initialize_ThreadTree(ThreadTree *T)
 {
+    if (T==NULL) return ERROR;
     ElemType ch;
     ch=preorder_str[str_idx++];
     if (ch=='#')
@@ -115,6 +118,8 @@ Status initialize_ThreadTree(ThreadTree *T)
         *T=(ThreadTree)malloc(sizeof(ThreadTreeNode));
         if (*T==NULL) return ERROR;
         (*T)->data=ch;
+        (*T)->ltag=0;
+        (*T)->rtag=0;
         initialize_ThreadTree(&(*T)->lchild);
         if ((*T)->lchild != NULL)
         {
@@ -127,6 +132,27 @@ Status initialize_ThreadTree(ThreadTree *T)
             (*T)->rtag=0;
         }
     }
+    return SUCCESS;
+}
+
+static void destroy_thread_nodes(ThreadTree T)
+{
+    if (T==NULL) return;
+    if (T->ltag==0 && T->lchild!=T)
+    {
+        destroy_thread_nodes(T->lchild);
+    }
+    if (T->rtag==0 && T->rchild!=T)
+    {
+        destroy_thread_nodes(T->rchild);
+    }
+    free(T);
+}
+
+Status destroy_ThreadTree(ThreadTree T)
+{
+    if (T==NULL) return ERROR;
+    destroy_thread_nodes(T);
     return SUCCESS;
 }
 

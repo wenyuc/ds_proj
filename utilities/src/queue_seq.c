@@ -4,7 +4,7 @@ Static Queue Operations Implementation
 #include <stdlib.h>
 #include "queue.h"
 
-StaticQueue* create_StaticQueue() 
+StaticQueue* create_StaticQueue(void)
 {
     StaticQueue* q = (StaticQueue*)malloc(sizeof(StaticQueue));
     if (q == NULL) {
@@ -42,7 +42,7 @@ Bool is_StaticQueueFull(StaticQueue* q)
 
 Status dequeue_StaticQueue(StaticQueue *q, ElemType *e)
 {
-    if (is_StaticQueueEmpty(q)) return ERROR;
+    if (q == NULL || e == NULL || is_StaticQueueEmpty(q)) return ERROR;
 
     *e=q->data[q->front];
     q->front++;
@@ -54,7 +54,7 @@ static Status QueueShifting(StaticQueue *q)
     if (q->front == 0) {return SUCCESS;} //No need to shift if front is already 0
     
     int diff=q->front;
-    for(int i=q->front;i<=q->rear; ++i)
+    for(int i=q->front;i<q->rear; ++i)
     {
         q->data[i-diff]=q->data[i];
     }
@@ -63,14 +63,15 @@ static Status QueueShifting(StaticQueue *q)
     return SUCCESS;   
 }//shift queue
 
-Status equeue_StaticQueue(StaticQueue *q, ElemType e)
+Status enqueue_StaticQueue(StaticQueue *q, ElemType e)
 {
-    if (!is_StaticQueueFull(q) && q->rear >= MAXSIZE)
+    if (q == NULL || is_StaticQueueFull(q))
     {//no full but rear reaches the end of the array
-        if (!QueueShifting(q))
-        {
-            return ERROR;   //Queue is full
-        }
+        return ERROR;
+    }
+    if (q->rear >= MAXSIZE && QueueShifting(q) != SUCCESS)
+    {
+        return ERROR;
     }
     q->data[q->rear]=e;
     q->rear++;
@@ -87,20 +88,21 @@ size_t get_StaticQueueLength(StaticQueue* q)
 
 Status peek_StaticQueueFront(StaticQueue* q, ElemType* item)
 {
-    if (is_StaticQueueEmpty(q)) return ERROR;
+    if (q == NULL || item == NULL || is_StaticQueueEmpty(q)) return ERROR;
     *item = q->data[q->front];
     return SUCCESS;
 }//peek_StaticQueueFront
 
 Status peek_StaticQueueRear(StaticQueue* q, ElemType* item)
 {
-    if (is_StaticQueueEmpty(q)) return ERROR;
+    if (q == NULL || item == NULL || is_StaticQueueEmpty(q)) return ERROR;
     *item = q->data[q->rear - 1];
     return SUCCESS;
 }//peek_StaticQueueRear
 
 Status get_StaticQueuePosition(StaticQueue *q, size_t *head, size_t *tail)
 {
+    if (q == NULL || head == NULL || tail == NULL) return ERROR;
     *head=q->front;
     *tail=q->rear;
     return SUCCESS;
