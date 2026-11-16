@@ -1,7 +1,7 @@
 CC = gcc
 
 # 头文件路径：src 的 .c 和 test 的 .c 都要能找到 include/*.h
-CFLAGS = -std=c99 -pedantic-errors -Wall -Wextra -Werror -g -O0 -Iinclude
+CFLAGS = -std=c99 -pedantic-errors -Wall -Wextra -Werror -Wnewline-elf -g -O0 -Iinclude
 CFLAGS += -MMD -MP
 
 BIN_DIR  = bin
@@ -24,6 +24,9 @@ TEST_TARGETS = $(patsubst $(TEST_DIR)/%.c, $(BIN_DIR)/%, $(TEST_SRCS))
 
 all: $(TEST_TARGETS)
 
+test: all
+	@set -e; for test in $(TEST_TARGETS); do ./$$test; done
+
 # 链接：每个测试目标 = 自己的 .o + 库的 .o
 $(BIN_DIR)/%: $(OBJ_DIR)/%.o $(LIB_OBJS)
 	@mkdir -p $(BIN_DIR)
@@ -44,4 +47,4 @@ clean:
 
 -include $(LIB_OBJS:.o=.d) $(TEST_OBJS:.o=.d)
 
-.PHONY: all clean
+.PHONY: all test clean

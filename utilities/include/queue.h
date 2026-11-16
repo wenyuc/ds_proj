@@ -15,7 +15,7 @@ typedef struct {
 }StaticQueue;
 
 //Static Queue operations
-StaticQueue* create_StaticQueue();
+StaticQueue* create_StaticQueue(void);
 Status initialize_StaticQueue(StaticQueue* q);
 Status enqueue_StaticQueue(StaticQueue* q, ElemType item);
 Status dequeue_StaticQueue(StaticQueue* q, ElemType* item);
@@ -61,7 +61,7 @@ typedef struct lnode{
 typedef LNode LList;
 //Dynamic Linked List operations. 
 //Linked List can be used as a queue but starting from 1. head is the dummy node(0).
-LList* create_LinkedList();
+LList* create_LinkedList(void);
 Status initialize_LinkedList(LList* head);
 Status enqueue_LinkedList(LList* head, END end, const ElemType item);
 Status dequeue_LinkedList(LList* head, END end, ElemType *item);
