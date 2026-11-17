@@ -76,6 +76,82 @@ Status inorder_Traversal(const BiTree T)
     return SUCCESS;
 }//inorder_Traversal
 
+Status levelorder_Traversal(const BiTree T, BiTree queue[MAXSIZE])
+{
+    if (T==NULL) return ERROR;
+
+    //BiTree queue[MAXSIZE];
+    int front=0;
+    int rear=0;
+    queue[rear]=T;   //enqueue at rear
+    rear=rear+1;
+
+    while(rear != front) //queue not empty
+    {
+        BiTree curr=queue[front];  //dequeue from front
+        front++;
+        printf("%c ", curr->data);
+        if (curr->lchild != NULL)
+        {
+            queue[rear]= curr->lchild;
+            rear++;
+        }
+        if (curr->rchild != NULL)
+        {
+            queue[rear]= curr->rchild;
+            rear++;
+        }
+    }
+    return SUCCESS; 
+}//levelorder_Traversal
+
+size_t get_BiTree_Depth1(const BiTree T)
+{
+    if (T==NULL) return 0;
+
+    size_t left_depth=get_BiTree_Depth1(T->lchild);
+    size_t right_depth=get_BiTree_Depth1(T->rchild);
+
+    return (left_depth > right_depth ? left_depth : right_depth) + 1;    
+}//get_BiTree_Depth1
+
+size_t get_BiTree_Depth(const BiTree T)
+{ 
+    if (T==NULL) return 0;
+
+    int depth=0;
+    BiTree queue[MAXSIZE];
+    int front=0;
+    int rear=0;
+    queue[rear]=T;//enqueue at rear
+    rear=rear+1;
+
+    while(front != rear) //queue not empty
+    {
+        int count=rear-front;
+        while (count >0 )
+        {
+            BiTree curr=queue[front];//dequeue at front
+            front++;
+            if (curr->lchild != NULL)
+            {
+                queue[rear]= curr->lchild;
+                rear++;
+            }
+            if (curr->rchild != NULL)
+            {
+                queue[rear]= curr->rchild;
+                rear++;
+            }
+            count--;
+        }//while count
+        depth++;
+    }//while front != rear
+
+    return depth;
+}//get_BiTree_Depth
+
+
 //后序遍历
 Status postorder_Traversal(const BiTree T)
 {

@@ -31,6 +31,8 @@ Status destroy_BiTree(BiTree T);
 Status inorder_Traversal(const BiTree T);
 Status preorder_Traversal(const BiTree T);
 Status postorder_Traversal(const BiTree T);
+Status levelorder_Traversal(const BiTree T, BiTree queue[MAXSIZE]);//层序遍历 level-order
+size_t get_BiTree_Depth(const BiTree T);
 
 ThreadTree create_ThreadTree(void);//create thread bi-tree
 Status initialize_ThreadTree(ThreadTree *T);
