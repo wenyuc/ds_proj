@@ -40,8 +40,7 @@ SymbolType getToken(char *symbol, int *index)
     }
 }//end of getToken
 
-//convert SymbolType to character to store in postfix array
-char token_to_char(SymbolType e)
+static char token_to_char(SymbolType e)
 {
     switch (e) {
         case ADD: return '+';
@@ -54,90 +53,104 @@ char token_to_char(SymbolType e)
         case EOS: return '\0';
         default: return (char)e;   // NUM 的字符
     }
-}//end of token_to_char
-
-void print_token(SymbolType e)
-{
-    // e 可能是 NUM 的字符，也可能是运算符枚举值
-    switch (e) {
-        case ADD: printf("+"); break;
-        case SUB: printf("-"); break;
-        case MUL: printf("*"); break;
-        case DIV: printf("/"); break;
-        case MOD: printf("%%"); break;
-        // LEFT_PARE/RIGHT_PARE 一般不会出现在后缀输出里
-        case LEFT_PARE: printf("("); break;
-        case RIGHT_PARE: printf(")"); break;
-        case EOS: printf("EOS"); break;
-        default:  printf("%c", e); break;   // NUM 的字符
-    }
-    return;
-}//end of print_token
+}
 
 //Convert infix expression to postfix expression
-int postfix(DynamicStack *S, char *post)
+int postfix(DynamicStack *S, char *post, size_t post_capacity)
 {
-    int in_stack[]={0,19,12,12,13,13,13,0}; //precedence values for operators in the stack
-    int out_stack[]={20,19,12,12,13,13,13,0}; //precedence values for operators outside the stack
+    const int in_stack[]={0,19,12,12,13,13,13,0};//precedence values for operators in the stack
+    const int out_stack[]={20,19,12,12,13,13,13,0};//precedence values for operators outside the stack
     SymbolType token;
     char symbol;//保存运算符或操作数
-    int index=0;//infix index
-    int post_index=0;//postfix index
-    SymbolType e;//保存出栈的内容
+    int index=0;//infix expression index
+    size_t post_index=0;//postfix expression index
+    int expect_operand=1;//flag to indicate whether an operand is expected next
+    SymbolType e=EOS;//save pop value from stack
 
+    if (S == NULL || post == NULL || post_capacity == 0) {
+        return ERROR;
+    }
     token=EOS;
-    dynamic_push(S, &token);//入栈EOS，作为栈底元素，它优先级最低    
+    if (dynamic_push(S, &token) != SUCCESS) {//push EOS(lowest precedence) onto the stack to mark the bottom
+        return ERROR;
+    }
 
     token=getToken(&symbol, &index);
     while(token != EOS)
     {
         if(token == NUM)
         {
-            print_token(symbol); //output the operand
-            post[post_index++]=symbol; //store the operand in the postfix array
+            if (!expect_operand || post_index + 1 >= post_capacity) {
+                return ERROR;
+            }
+            post[post_index++]=symbol;
+            expect_operand=0;
         }
         else if(token == LEFT_PARE)
         {
-            dynamic_push(S, &token);
-            //dynamic_getTop(S, &e);print_token(e); //output the top element of the stack for debugging purposes
+            if (!expect_operand || dynamic_push(S, &token) != SUCCESS) {
+                return ERROR;
+            }
         }
         else if(token == RIGHT_PARE)
         {
-            while(dynamic_getTop(S, &e) == SUCCESS && e != LEFT_PARE)
-            {
-                dynamic_pop(S, &e);
-                print_token(e); //output the operator before storing it in the postfix array
-                post[post_index++]=token_to_char(e); //store the operator in the postfix array
+            if (expect_operand) {
+                return ERROR;
             }
-            dynamic_pop(S, &e); //pop the left parenthesis
+            while(dynamic_getTop(S, &e) == SUCCESS && e != LEFT_PARE && e != EOS)
+            {
+                if (post_index + 1 >= post_capacity || dynamic_pop(S, &e) != SUCCESS) {
+                    return ERROR;
+                }
+                post[post_index++]=token_to_char(e);
+            }
+            if (e != LEFT_PARE || dynamic_pop(S, &e) != SUCCESS) {
+                return ERROR;
+            }
         }
         else //operator
         {
-            dynamic_getTop(S, &e);
-            //printf("%d precedence: %d\n", (SymbolType)e, in_stack[(SymbolType)e]);
-            //printf("%d precedence: %d\n", token, out_stack[token]);
-            while(out_stack[token] <= in_stack[(SymbolType)e])
-            {
-                dynamic_pop(S, &e);
-                print_token(e); //output the operator before storing it in the postfix array
-                post[post_index++]=token_to_char(e); //store the operator in the postfix array
-                dynamic_getTop(S, &e);
+            if (expect_operand || dynamic_getTop(S, &e) != SUCCESS) {
+                return ERROR;
             }
-            dynamic_push(S, &token);
-            //dynamic_getTop(S, &e);print_token(e); //output the top element of the stack for debugging purposes
+            while(e != EOS && e != LEFT_PARE &&
+                  out_stack[token] <= in_stack[e])
+            {
+                if (post_index + 1 >= post_capacity || dynamic_pop(S, &e) != SUCCESS) {
+                    return ERROR;
+                }
+                post[post_index++]=token_to_char(e);
+                if (dynamic_getTop(S, &e) != SUCCESS) {
+                    return ERROR;
+                }
+            }
+            if (dynamic_push(S, &token) != SUCCESS) {
+                return ERROR;
+            }
+            expect_operand=1;
         }
         token=getToken(&symbol, &index);
     }//while token != EOS
 
+    if (expect_operand) {
+        return ERROR;
+    }
     while(dynamic_getTop(S, &e) == SUCCESS && e != EOS)
     {
-        dynamic_pop(S, &e);
-        print_token(e); //output the remaining operators
-        post[post_index++]=token_to_char(e); //store the remaining operators in the postfix array
+        if (e == LEFT_PARE || post_index + 1 >= post_capacity ||
+            dynamic_pop(S, &e) != SUCCESS) {
+            return ERROR;
+        }
+        post[post_index++]=token_to_char(e);
     }
     
-    post[post_index]='\0'; //null-terminate the postfix array
-    printf("\n");
+    if (dynamic_getTop(S, &e) != SUCCESS || e != EOS) {
+        return ERROR;
+    }
+    if (dynamic_pop(S, &e) != SUCCESS) {
+        return ERROR;
+    }
+    post[post_index]='\0';
     return SUCCESS;
 }//end of postfix
 
@@ -146,10 +159,17 @@ int main(void)
     int initialCapacity=100;
     char post[MAXSIZE];
     DynamicStack *S=create_dynamicStack(initialCapacity, sizeof(SymbolType));
-    if (S==NULL) return ERROR;
+    if (S==NULL) {
+        fprintf(stderr, "Failed to create stack.\n");
+        return ERROR;
+    }
 
-    //size_t n = sizeof(exprs) / sizeof(exprs[0]);   // n = 2
-    postfix(S, post);
+    if (postfix(S, post, sizeof(post)) != SUCCESS) {
+        fprintf(stderr, "Invalid infix expression.\n");
+        destroy_dynamicStack(S);
+        return ERROR;
+    }
+    printf("%s\n", post);
     printf("postfix expression %s \n",post);
     destroy_dynamicStack(S);
     

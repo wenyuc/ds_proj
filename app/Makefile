@@ -28,7 +28,7 @@ $(OBJ_DIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # 若 utilities 的*.o 不存在，先构建*.o
-$(UTIL_LIBS)/%.o:
+$(UTIL_OBJ_DIR)/%.o:
 	$(MAKE) -C ../utilities obj/$*.o
 
 clean:
