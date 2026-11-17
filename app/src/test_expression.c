@@ -35,69 +35,87 @@ SymbolType getToken(char *symbol, int *index)
     }
 }//getToken
 
-int eval(DynamicStack *S)
+int eval(DynamicStack *S, int *result)
 {
     char symbol;
     int op1,op2;
     int index=0;
-    int tmp=0;
+    int value;
     SymbolType token;
-    int result;
+    if (S == NULL || result == NULL) {
+        return ERROR;
+    }
     token=getToken(&symbol, &index);
     while(token != EOS)
     {
         if (token==NUM)
         {
-            tmp=symbol-'0';
-            dynamic_push(S, &tmp);
+            if (symbol < '0' || symbol > '9') {
+                return ERROR;
+            }
+            value=symbol-'0';
+            if (dynamic_push(S, &value) != SUCCESS) {
+                return ERROR;
+            }
         } else{
-            dynamic_pop(S, &op2);
-            dynamic_pop(S, &op1);
+            if (token < ADD || token > MOD || dynamic_stackSize(S) < 2 ||
+                dynamic_pop(S, &op2) != SUCCESS ||
+                dynamic_pop(S, &op1) != SUCCESS) {
+                return ERROR;
+            }
             
             switch(token)
             {
                 case ADD:
-                    tmp=op1 + op2;
-                    dynamic_push(S, &tmp);
+                    value=op1 + op2;
                     break;
                 case SUB:
-                    tmp=op1 - op2;
-                    dynamic_push(S, &tmp);
+                    value=op1 - op2;
                     break;
                 case MUL:
-                    tmp=op1 * op2;
-                    dynamic_push(S, &tmp);
+                    value=op1 * op2;
                     break;
                 case DIV:
-                    tmp=op1 / op2;
-                    printf("%d / %d = %d\n", op1, op2, tmp);
-                    dynamic_push(S, &tmp);
+                    if (op2 == 0) {
+                        return ERROR;
+                    }
+                    value=op1 / op2;
                     break;
                 case MOD:
-                    tmp=op1 % op2;
-                    printf("%d %% %d = %d\n", op1, op2, tmp);
-                    dynamic_push(S, &tmp);
+                    if (op2 == 0) {
+                        return ERROR;
+                    }
+                    value=op1 % op2;
                     break;
                 default:
-                    break;
+                    return ERROR;
             }//switch
+            if (dynamic_push(S, &value) != SUCCESS) {
+                return ERROR;
+            }
         }//if-else
-        //get the top element
-        dynamic_getTop(S, &tmp);
-        printf("top element: %d at %d do %d\n", tmp, S->top, token);
         token=getToken(&symbol, &index);
     }//while
-    dynamic_pop(S, &result);
-    return result;
+    if (dynamic_stackSize(S) != 1 || dynamic_pop(S, result) != SUCCESS) {
+        return ERROR;
+    }
+    return SUCCESS;
 }//eval
 
 int main(void)
 {
     int initialCapacity=20;
     DynamicStack *S=create_dynamicStack(initialCapacity, sizeof(int));
-    if (S==NULL) return ERROR;
+    if (S==NULL) {
+        fprintf(stderr, "Failed to create stack.\n");
+        return ERROR;
+    }
     int result;
-    result=eval(S);
+    if (eval(S, &result) != SUCCESS) {
+        fprintf(stderr, "Invalid postfix expression.\n");
+        destroy_dynamicStack(S);
+        return ERROR;
+    }
     printf("expression %s result=%d\n",expr, result);
     destroy_dynamicStack(S);
     return SUCCESS;
