@@ -4,6 +4,7 @@ Tree Implementation
 #ifndef TREE_H
 #define TREE_H
 
+#include <stddef.h>
 #include "ds_type.h"
 
 typedef struct node
@@ -32,7 +33,8 @@ Status inorder_Traversal(const BiTree T);
 Status preorder_Traversal(const BiTree T);
 Status postorder_Traversal(const BiTree T);
 Status levelorder_Traversal(const BiTree T, BiTree queue[MAXSIZE]);//层序遍历 level-order
-size_t get_BiTree_Depth(const BiTree T);
+Status get_BiTree_Depth(const BiTree T, size_t *depth, size_t *node_count); //获取二叉树深度和结点数
+Status levelorder_BiTree(const BiTree T);
 
 ThreadTree create_ThreadTree(void);//create thread bi-tree
 Status initialize_ThreadTree(ThreadTree *T);

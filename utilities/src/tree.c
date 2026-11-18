@@ -13,44 +13,58 @@ static int str_idx=0;
 //构建一颗树，通过前序生成的一个字符串来生成二叉树结构
 BiTree create_BiTree(void)
 {    
-    BiTree *T=(BiTree*)malloc(sizeof(BiTree));
+    BiTree *T=(BiTree*)malloc(sizeof(BiTree));//T在堆上，假设T的地址为0x2000，此时地址0x2000起8个字节的内容为NULL，T指向BiTree变量.
     if (T==NULL) return NULL;
     str_idx=0;
-    if (initialize_BiTree(T) != SUCCESS)
+    if (initialize_BiTree(T) != SUCCESS) //initialize_BiTree()后，T=0x2000, *T=0x1000
     {
         free(T);
         return NULL;
     }
-    return *T;
+    /*
+    如果字节return *T， 将0x1000返回（即将根结点地址返回）没问题，但是T所在的地址0x2000就没有指针指向它，会造成内存泄露
+    要用如下方式返回
+    */
+    BiTree root=*T;//先把根地址存起来
+    free(T);//再释放根这块堆内存
+    return root;//返回根地址
 }//create_BiTree
 
 Status initialize_BiTree(BiTree *T)
 {
-    if (T==NULL) return ERROR;
-    ElemType ch;
-    ch=preorder_str[str_idx++];
+    if (T == NULL) return ERROR;
 
-    if (ch=='#')
-    {
-        *T=NULL;    //*TreeNode=NULL
-    } else {
-        *T=(BiTree)malloc(sizeof(BiTreeNode));
-        if (*T==NULL) return ERROR;
-        (*T)->data=ch;
-        initialize_BiTree(&(*T)->lchild);
-        initialize_BiTree(&(*T)->rchild);
+    if (preorder_str[str_idx] == '\0') return ERROR;   /* 串意外结束 */
+    ElemType ch = preorder_str[str_idx++];
+
+    if (ch == '#') {
+        *T = NULL;
+        return SUCCESS;
+    }
+
+    *T = (BiTree)malloc(sizeof(BiTreeNode));//A结点{data='A',lchild=..., rchild=...}<-根结点. 假设它的地址为0x1000（malloc）分配，然后赋值给*T, 地址0x2000的内容为0x1000
+    if (*T == NULL) return ERROR;
+
+    (*T)->data = ch;
+
+    if (initialize_BiTree(&(*T)->lchild) != SUCCESS) {
+        destroy_BiTree(*T);// 释放 *T 及已建左子树 
+        return ERROR;
+    }
+    if (initialize_BiTree(&(*T)->rchild) != SUCCESS) {
+        destroy_BiTree(*T);
+        return ERROR;
     }
     return SUCCESS;
 }//initialize_BiTree
 
 Status destroy_BiTree(BiTree T)
 {
-    if (T)
-    {
-        destroy_BiTree(T->lchild);
-        destroy_BiTree(T->rchild);
-        free(T);
-    }
+    if (T==NULL) return ERROR;
+    destroy_BiTree(T->lchild);
+    destroy_BiTree(T->rchild);
+    free(T);
+    T = NULL;
     return SUCCESS;
 }//destroy_BiTree
 
@@ -115,11 +129,17 @@ size_t get_BiTree_Depth1(const BiTree T)
     return (left_depth > right_depth ? left_depth : right_depth) + 1;    
 }//get_BiTree_Depth1
 
-size_t get_BiTree_Depth(const BiTree T)
+Status get_BiTree_Depth(const BiTree T, size_t *depth, size_t *node_count)
 { 
-    if (T==NULL) return 0;
+    if (T==NULL)
+    {
+        *depth=0;
+        *node_count=0;
+        return SUCCESS;
+    }
 
-    int depth=0;
+    *depth=0;
+    *node_count=0;
     BiTree queue[MAXSIZE];
     int front=0;
     int rear=0;
@@ -129,6 +149,7 @@ size_t get_BiTree_Depth(const BiTree T)
     while(front != rear) //queue not empty
     {
         int count=rear-front;
+        (*node_count)+=count;
         while (count >0 )
         {
             BiTree curr=queue[front];//dequeue at front
@@ -145,10 +166,10 @@ size_t get_BiTree_Depth(const BiTree T)
             }
             count--;
         }//while count
-        depth++;
+        (*depth)++;
     }//while front != rear
 
-    return depth;
+    return SUCCESS;
 }//get_BiTree_Depth
 
 
@@ -177,8 +198,10 @@ ThreadTree create_ThreadTree(void)
         free(T);
         return NULL;
     }
-    return *T;
-}
+    ThreadTree root=*T;
+    free(T);
+    return root;
+}//create_ThreadTree
 
 //initialize ThreadTree with specific pre-order string
 Status initialize_ThreadTree(ThreadTree *T)
@@ -209,11 +232,11 @@ Status initialize_ThreadTree(ThreadTree *T)
         }
     }
     return SUCCESS;
-}
+}//initial_ThreadTree
 
-static void destroy_thread_nodes(ThreadTree T)
+static Status destroy_thread_nodes(ThreadTree T)
 {
-    if (T==NULL) return;
+    if (T==NULL) return ERROR;
     if (T->ltag==0 && T->lchild!=T)
     {
         destroy_thread_nodes(T->lchild);
@@ -223,14 +246,20 @@ static void destroy_thread_nodes(ThreadTree T)
         destroy_thread_nodes(T->rchild);
     }
     free(T);
-}
+    T = NULL;
+    return SUCCESS;
+}//destroy_thread_nodes
 
 Status destroy_ThreadTree(ThreadTree T)
 {
     if (T==NULL) return ERROR;
-    destroy_thread_nodes(T);
-    return SUCCESS;
-}
+    if ( destroy_thread_nodes(T)==SUCCESS)
+    {
+        return SUCCESS;
+    } else {
+        return ERROR;
+    }
+}//destroy_ThreadTree
 
 //具体线索化实现
 static Status threading (ThreadTree T)
@@ -252,7 +281,7 @@ static Status threading (ThreadTree T)
         threading(T->rchild);
     }
     return SUCCESS;
-}
+}//threading
 
 //开始线索化,创建头结点，处理头结点，调用具体线索化
 Status inorder_Threading(ThreadTree *Head, ThreadTree T)
