@@ -1,3 +1,11 @@
+/*
+polynomial.c
+Use a queue to evaluate a polynomial.
+Use Horner's method to evaluate the polynomial.
+P(x)=anx^n + an-1x^(n-1) + an-2x^(n-2) + ... + a0
+Horner's method:
+P(x)=(...((a_nx+a_{n-1})x+a_{n-2})x+...+a_1x)+a_0
+*/
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
