@@ -4,7 +4,8 @@ LDLIBS = -lm -lpthread -lssl -lcrypto
 
 $(shell mkdir -p bin)
 
-SRCS = test_loop.c test_enum.c test_pointer.c test_segments.c test_arg_passing.c
+SRCS = test_loop.c test_enum.c test_pointer.c test_segments.c test_arg_passing.c \
+       flex_arr.c test_size.c
 	   
 TARGETS = $(addprefix bin/, $(basename $(SRCS)))
 
