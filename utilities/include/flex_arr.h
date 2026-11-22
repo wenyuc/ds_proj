@@ -27,5 +27,7 @@ struct uart_frame {
 };
 
 //frame_flex operations
-struct frame_flex_c* create_flex_arr(frame_flex_c *f; const uint8_t len);
-struct uart_frame* create_uart_frame(uart_frame *, const uint8_t len);
+struct frame_flex_c* create_flex_arr(struct frame_flex_c *f, const uint8_t len);
+struct uart_frame* create_uart_frame(uint8_t cmd, const uint8_t *payload, uint16_t len);
+void dump_uart_frame(const struct uart_frame *f);
+struct uart_frame* parse_uart_frame(const uint8_t *buf, size_t buflen);
