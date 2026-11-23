@@ -10,6 +10,9 @@ C11 6.7.2.1（结构和联合说明符）第 18 段：
 违反就是约束违反（constraint violation），编译器必须报错，不是警告。
 */
 
+#ifndef FLEXARRAY_H
+#define FLEXARRAY_H
+
 #include <stdint.h>
 
 //字符流的柔性数组
@@ -31,3 +34,5 @@ struct frame_flex_c* create_flex_arr(struct frame_flex_c *f, const uint8_t len);
 struct uart_frame* create_uart_frame(uint8_t cmd, const uint8_t *payload, uint16_t len);
 void dump_uart_frame(const struct uart_frame *f);
 struct uart_frame* parse_uart_frame(const uint8_t *buf, size_t buflen);
+
+#endif /* FLEXARRAY_H*/
