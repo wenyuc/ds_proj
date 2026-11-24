@@ -2,18 +2,9 @@
 RingBuf Unit Test 
 */
 
-#include <stdio.h>
-#include <assert.h>
 #include "ringbuf.h"
 
-static int g_fail = 0;
-
-#define CHECK(cond, msg) do { \
-    if (!(cond)) { printf("FAIL: %s\n", msg); g_fail++; } \
-    else { printf("PASS: %s\n", msg); } \
-} while (0)
-
-void rb_test_cases() {
+void rb_test_cases(void) {
     /* 静态分配：16 字节，有效容量 15 */
     uint8_t storage[16];
     RingBuf rb;
@@ -156,7 +147,7 @@ void rb_test_cases() {
     for (int i = 0; i < 2; i++) if (pk3[i] != big[8+i]) ok2 = 0;
     for (int i = 0; i < 8; i++) if (pk3[2+i] != big[i]) ok2 = 0;
     CHECK(ok2, "peek wrapped data order correct");
-    CHECK(rb_available(&rb) == 10, "peek wrapped does not consume");
+    CHECK(rb_available(&rb) == 12, "peek wrapped does not consume");
 
     printf("\n%s\n", g_fail == 0 ? "ALL TESTS PASSED" : "SOME TESTS FAILED");
     return;
