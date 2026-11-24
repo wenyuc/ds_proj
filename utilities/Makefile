@@ -3,6 +3,7 @@ CC = gcc
 # 头文件路径：src 的 .c 和 test 的 .c 都要能找到 include/*.h
 CFLAGS = -std=c99 -pedantic-errors -Wall -Wextra -Werror -g -O0 -Iinclude
 CFLAGS += -MMD -MP
+TEST_CFLAGS = $(CFLAGS) -DDS_UNIT_TEST
 
 BIN_DIR  = bin
 OBJ_DIR  = obj
@@ -40,7 +41,7 @@ $(OBJ_DIR)/%.o: src/%.c
 # 编译 test/*.c -> obj/*.o
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(TEST_CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BIN_DIR) $(OBJ_DIR)

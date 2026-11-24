@@ -1,8 +1,6 @@
 #ifndef DS_TYPE_H
 #define DS_TYPE_H
 
-#include <stdio.h>
-
 #define MAXSIZE 100
 #define MAXVEX 100
 #define MAXEDGE (MAXVEX * MAXVEX)
@@ -23,12 +21,15 @@ typedef enum {
 }SymbolType;
 
 
+#ifdef DS_UNIT_TEST
+#include <stdio.h>
+
 static int g_fail = 0; //fail testcase count
 
-//helper function for unit test
 #define CHECK(cond, msg) do { \
     if (!(cond)) { printf("FAIL: %s\n", msg); g_fail++; } \
     else { printf("PASS: %s\n", msg); } \
 } while (0)
+#endif
 
 #endif // DS_TYPE_H

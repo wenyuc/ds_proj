@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -pedantic-errors -Wall -Wextra -Werror -g -O0
 CFLAGS += -MMD -MP
+TEST_CFLAGS = $(CFLAGS) -DDS_UNIT_TEST
 
 # 头文件搜索路径（相对根目录）
 INCLUDES = -Iutilities/include
@@ -44,7 +45,7 @@ $(OBJ_DIR)/util_%.o: utilities/src/%.c
 # 编译 utilities/test/*.c -> obj/util_*.o
 $(OBJ_DIR)/util_%.o: utilities/test/%.c
 	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(TEST_CFLAGS) $(INCLUDES) -c $< -o $@
 
 # 编译 app/src/*.c -> obj/app_*.o
 $(OBJ_DIR)/app_%.o: app/src/%.c
