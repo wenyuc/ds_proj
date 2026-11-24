@@ -13,18 +13,17 @@ static inline size_t align_up(size_t v, size_t a) {
     return (v + a - 1) & ~(a - 1);
 }
 
-static inline void mp_lock(mem_pool_t *p) {
 #ifdef MEM_POOL_THREAD_SAFE
+static inline void mp_lock(mem_pool_t *p) {
     if (p->lock) p->lock(p->lock_ctx);
-#endif
-(void)p; 
 }
 static inline void mp_unlock(mem_pool_t *p) {
-#ifdef MEM_POOL_THREAD_SAFE
     if (p->unlock) p->unlock(p->lock_ctx);
-#endif
-(void)p; 
 }
+#else
+static inline void mp_lock(mem_pool_t *p)   { (void)p; } //无锁版本是空操作
+static inline void mp_unlock(mem_pool_t *p) { (void)p; }
+#endif
 
 int mem_pool_init(mem_pool_t *pool,
                   void *buffer,
