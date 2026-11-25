@@ -13,6 +13,7 @@ typedef int EdgeType;//edge type in graph
 typedef char ElemType;
 typedef enum { FALSE, TRUE } Bool;
 typedef enum { HEAD, TAIL} END; //List endpoint
+typedef enum { RED, BLACK } Color;//Red-Black Tree
 
 typedef enum {
     LEFT_PARE, RIGHT_PARE,
