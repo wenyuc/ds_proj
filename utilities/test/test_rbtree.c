@@ -95,13 +95,13 @@ static void test_stress(void) {
         arr[i] = rand() % 100000;
         rb_insert(t, arr[i]);
     }
-    printf("    插入后校验: %s\n", rb_validate(t) ? "通过" : "失败");
-
+    //printf("    插入后校验: %s\n", rb_validate(t) ? "通过" : "失败");
+    CHECK(rb_validate(t),"插入后校验");
     /* 删除一半 */
     for (int i = 0; i < N; i += 2)
         rb_delete(t, arr[i]);
-    printf("    删除一半后校验: %s\n", rb_validate(t) ? "通过" : "失败");
-
+    //printf("    删除一半后校验: %s\n", rb_validate(t) ? "通过" : "失败");
+    CHECK(rb_validate(t),"删除一半后校验");
     /* 校验剩余与删除状态 */
     int found = 0, leaked = 0;
     for (int i = 0; i < N; i++) {
